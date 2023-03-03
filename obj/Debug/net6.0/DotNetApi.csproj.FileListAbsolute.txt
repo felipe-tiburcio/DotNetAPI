@@ -24,3 +24,4 @@ C:\Users\felarauj\projects\courses\udemy\DotNetApi\obj\Debug\net6.0\refint\DotNe
 C:\Users\felarauj\projects\courses\udemy\DotNetApi\obj\Debug\net6.0\DotNetApi.pdb
 C:\Users\felarauj\projects\courses\udemy\DotNetApi\obj\Debug\net6.0\DotNetApi.genruntimeconfig.cache
 C:\Users\felarauj\projects\courses\udemy\DotNetApi\obj\Debug\net6.0\ref\DotNetApi.dll
+C:\Users\felarauj\projects\courses\udemy\DotNetApi\bin\Debug\net6.0\appsettings.Staging.json
