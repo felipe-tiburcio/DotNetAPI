@@ -1,6 +1,56 @@
+using Microsoft.AspNetCore.Mvc;
+
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 
-app.MapGet("/", () => "Hello World!");
+app.MapPost("/product", (Product product) =>
+{
+  ProductRepository.Add(product);
+  return Results.Created($"/products/{product.Code}", product.Code);
+});
+
+app.MapGet("/product/{code}", ([FromRoute] string code) =>
+{
+  var product = ProductRepository.GetBy(code);
+
+  return product != null ? Results.Ok(product) : Results.NotFound();
+});
+
+app.MapPut("/product", (Product product) =>
+{
+  var selection = ProductRepository.GetBy(product.Code);
+  selection.Name = product.Name;
+  return Results.Ok();
+});
+
+app.MapDelete("/product/{code}", ([FromRoute] string code) =>
+{
+  var selection = ProductRepository.GetBy(code);
+
+  ProductRepository.Remove(selection);
+  return Results.Ok();
+});
 
 app.Run();
+
+public static class ProductRepository
+{
+  public static List<Product> Products { get; set; } = new List<Product>();
+  public static void Add(Product product)
+  {
+    Products.Add(product);
+  }
+
+  public static Product GetBy(string code) => Products.FirstOrDefault(p => p.Code == code);
+
+  public static void Remove(Product product)
+  {
+    Products.Remove(product);
+  }
+}
+
+public class Product
+{
+  public string Code { get; set; }
+  public string Name { get; set; }
+}
