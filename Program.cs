@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddDbContext<ApplicationDbContext>();
+
 var app = builder.Build();
 var configuration = app.Configuration;
 ProductRepository.Init(configuration);
@@ -66,4 +69,12 @@ public class Product
 {
   public string Code { get; set; }
   public string Name { get; set; }
+}
+
+public class ApplicationDbContext : DbContext
+{
+  public DbSet<Product> Products { get; set; }
+
+  protected override void OnConfiguring(DbContextOptionsBuilder options)
+    => options.UseSqlServer(@"Server=localhost\SQLEXPRESS;Database=Products;Trusted_Connection=True;");
 }
