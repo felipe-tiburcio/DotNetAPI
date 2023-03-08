@@ -45,10 +45,29 @@ app.MapGet("/product/{id}", ([FromRoute] int id, ApplicationDbContext context) =
   return product != null ? Results.Ok(product) : Results.NotFound();
 });
 
-app.MapPut("/product", (Product product) =>
+app.MapPut("/product/{id}", ([FromRoute] int id, ProductRequest productRequest, ApplicationDbContext context) =>
 {
-  var selection = ProductRepository.GetBy(product.Code);
-  selection.Name = product.Name;
+  var selection = context.Products
+    .Include(p => p.Tags)
+    .Where(p => p.Id == id).First();
+
+  selection.Code = productRequest.Code;
+  selection.Name = productRequest.Name;
+  selection.Description = productRequest.Description;
+
+  var category = context.Category.Where(c => c.Id == productRequest.CategoryId).First();
+  selection.Category = category;
+  selection.Tags = new List<Tag>();
+
+  if (productRequest.Tags != null)
+  {
+    selection.Tags = new List<Tag>();
+
+    foreach (var item in productRequest.Tags)
+      selection.Tags.Add(new Tag { Name = item });
+  }
+
+  context.SaveChanges();
   return Results.Ok();
 });
 
